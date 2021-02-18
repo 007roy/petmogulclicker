@@ -9,7 +9,7 @@
 // ==/UserScript==
 
 (function(){
-
+    const me = 176;
     function buy(){
         if(!!document.getElementById("pubt")){
             document.getElementById("pubt").click();
@@ -40,7 +40,7 @@
         var urlParams = new URLSearchParams(window.location.search);
         var id = urlParams.get('id');
         //console.error('id=',id);
-        if(id==176) level();
+        if(id==me) level();
     },1000);
 
 })();
