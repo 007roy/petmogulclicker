@@ -20,6 +20,12 @@
         var scash = document.getElementById("curentcash").getElementsByTagName("SPAN")[0].getAttribute("title").split(",")[0].substr(1);
         var icash = parseInt(scash);
         if(icash < 6) document.getElementById("quickcan").click();
+        if(icash == 17){
+            document.getElementById("pd").click();
+            var drop = document.getElementById("dropvalue");
+            drop.selectedIndex = "9";
+            drop.dispatchEvent(new Event('change', {bubbles: true }));
+        }
     }
 
     function level(){
