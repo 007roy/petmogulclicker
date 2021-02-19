@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 (function(){
-    const me = 176;
+    const me = 143;
     
     var jQuery = window.jQuery;
     function buy(){
@@ -48,8 +48,18 @@
     setInterval(function(){
         var urlParams = new URLSearchParams(window.location.search);
         var id = urlParams.get('id');
-        //console.error('id=',id);
         if(id==me) level();
     },1000);
+  
+  
+  var zNode = document.createElement ('div');
+  zNode.innerHTML = '<button id="myButton" type="button">Clicker Off</button><br>';
+  zNode.setAttribute('id', 'myContainer');
+  jQuery("#playercash").after(zNode);
+  jQuery("#myButton").on("click", ClickerPowerOn);
+  function ClickerPowerOn(zEvent){
+    console.log('clicker');
+      jQuery("#myButton").text(function(i, text){return text === "Clicker On" ? "Clicker Off" : "Clicker On";});
+  }
 
 })();
