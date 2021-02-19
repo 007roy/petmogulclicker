@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker
 // @namespace    https://violentmonkey.github.io
-// @version      0.3
+// @version      0.4
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -59,7 +59,10 @@ setInterval(level(),1000);
 setInterval(reloadPage, GM_getValue("REFRESH_INTERVAL", 600000));
 
 var zNode = document.createElement ('div');
-zNode.innerHTML = '<button id="myButton" type="button">Clicker On</button><br>';
+zNode.innerHTML = `
+   <input id="myButton" type="checkbox"><label for="myButton">Auto Buy</label>
+   <input id="autoLevelCheck"><label for="autoLevelCheck">Auto Level</label>
+`;
 zNode.setAttribute('id', 'myContainer');
 jQuery("#playercash").after(zNode);
 jQuery("#myButton").on("click", ClickerPowerOn);
