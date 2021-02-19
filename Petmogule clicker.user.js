@@ -61,7 +61,7 @@ setInterval(reloadPage, GM_getValue("REFRESH_INTERVAL", 600000));
 var zNode = document.createElement ('div');
 zNode.innerHTML = `
    <input id="myButton" type="checkbox"><label for="myButton">Auto Buy</label>
-   <input id="autoLevelCheck"><label for="autoLevelCheck">Auto Level</label>
+   <input id="autoLevelCheck" type="checkbox"><label for="autoLevelCheck">Auto Level</label>
 `;
 zNode.setAttribute('id', 'myContainer');
 jQuery("#playercash").after(zNode);
