@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Petmogule clicker
-// @namespace    http://tampermonkey.net/
+// @namespace    https://violentmonkey.github.io
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
