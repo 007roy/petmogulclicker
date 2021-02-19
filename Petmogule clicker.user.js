@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker
 // @namespace    https://violentmonkey.github.io
-// @version      0.2
+// @version      0.3
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -43,7 +43,7 @@ function level(){
         ibuying = true;
         setTimeout(() => {jQuery("#lvlbt").click(); ibuying = false;},500);
     }
-    if(jQuery('#lvlbt').prob('disabled')) reloadPage();
+    if(jQuery('#lvlbt').is('[disabled=disabled]')) reloadPage();
 }
 
 function reloadPage(){
@@ -53,7 +53,7 @@ function reloadPage(){
 var ibuying = false;
 var clickerOn = true;
   
-setInterval(buy, 100);
+setInterval(buy, 10);
 setInterval(quickCan,1000);
 setInterval(level(),1000);
 setInterval(reloadPage, GM_getValue("REFRESH_INTERVAL", 600000));
@@ -68,6 +68,3 @@ function ClickerPowerOn(zEvent){
     jQuery("#myButton").text(function(i, text){return text === "Clicker On" ? "Clicker Off" : "Clicker On";});
     clickerOn = clickerOn ? false : true;
 }
-
-
-// #lvlbt
