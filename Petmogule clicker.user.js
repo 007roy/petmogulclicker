@@ -12,14 +12,13 @@
 var jQuery = window.jQuery;
 
 function buy(){
-    if(!clickerOn) return;
+    if(!jQuery("#autoBuyCheck").prop("checked")) return;
     if(!!document.getElementById("pubt")){
         document.getElementById("pubt").click();
     }
 }
 
 function quickCan(){
-    if(!clickerOn) return;
     var scash = document.getElementById("curentcash").getElementsByTagName("SPAN")[0].getAttribute("title").split(",")[0].substr(1);
     var icash = parseInt(scash);
     if(icash < 9) document.getElementById("quickcan").click();
@@ -32,8 +31,8 @@ function quickCan(){
 }
 
 function level(){
-    let id = GM_getValue("LEVEL_ID", 0)
-    if(!clickerOn) return;
+    //let id = GM_getValue("LEVEL_ID", 0)
+    if(!jQuery("#autoLevelCheck").prop("checked")) return;
     var urlParams = new URLSearchParams(window.location.search);
     if(id!=urlParams.get('id')) return;
     if(!!jQuery("#lvlbt1") && !ibuying)
@@ -60,14 +59,8 @@ setInterval(reloadPage, GM_getValue("REFRESH_INTERVAL", 600000));
 
 var zNode = document.createElement ('div');
 zNode.innerHTML = `
-   <input id="myButton" type="checkbox"><label for="myButton">Auto Buy</label>
+   <input id="autoBuyCheck" type="checkbox"><label for="autoBuyCheck">Auto Buy</label>
    <input id="autoLevelCheck" type="checkbox"><label for="autoLevelCheck">Auto Level</label>
 `;
-zNode.setAttribute('id', 'myContainer');
+zNode.setAttribute('id', 'clickerContainer');
 jQuery("#playercash").after(zNode);
-jQuery("#myButton").on("click", ClickerPowerOn);
-
-function ClickerPowerOn(zEvent){
-    jQuery("#myButton").text(function(i, text){return text === "Clicker On" ? "Clicker Off" : "Clicker On";});
-    clickerOn = clickerOn ? false : true;
-}
