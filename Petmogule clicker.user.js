@@ -5,11 +5,14 @@
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
+// @require      http://code.jquery.com/jquery-latest.min.js
 // @grant        none
 // ==/UserScript==
 
 (function(){
     const me = 176;
+    
+    var jQuery = window.jQuery;
     function buy(){
         if(!!document.getElementById("pubt")){
             document.getElementById("pubt").click();
