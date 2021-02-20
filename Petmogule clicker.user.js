@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker
 // @namespace    https://violentmonkey.github.io
-// @version      1.0
+// @version      1.1
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
