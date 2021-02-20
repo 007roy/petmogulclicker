@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker
 // @namespace    https://violentmonkey.github.io
-// @version      1.1
+// @version      1.3
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -11,13 +11,19 @@
 // ==/UserScript==
    
 var jQuery = window.jQuery;
-
+var myId = parseInt(String(jQuery('#pvt_notice').prop('onclick')).match(/[0-9]+/g)[1]);
 function buy(){
     if(!jQuery("#autoBuyCheck").prop("checked")) return;
     if(!!document.getElementById("pubt")){
         document.getElementById("pubt").click();
-    }
+        GM_setValue("LAST_BUY"+myId, jQuery.now());
+    }else{
+        var lastBuy = GM_getValue("LAST_BUY"+myId,jQuery.now());
+        if(jQuery.now()-lastBuy > 60000) reloadPage();
+    }    
 }
+
+
 function getCash(){
   var scash = document.getElementById("curentcash").getElementsByTagName("SPAN")[0].getAttribute("title").split(",")[0].substr(1);
   return parseInt(scash);
@@ -34,11 +40,7 @@ function quickCan(){
 }
 
 function level(){
-    //let id = GM_getValue("LEVEL_ID", 0)
-    if(jQuery("#lvlbt1").length == 1) GM_setValue("CRAWLING_ID",0);
     if(!jQuery("#autoLevelCheck").prop("checked")) return;
-    //var urlParams = new URLSearchParams(window.location.search);
-    //if(id!=urlParams.get('id')) return;
     if(jQuery("#lvlbt1").length == 1 && !ibuying)
     {
         console.log('beep');
@@ -55,27 +57,22 @@ function reloadPage(){
 }
 
 function flipBoard(){
-    
-    if(jQuery("#crawlBoardCheck").prop("checked") && GM_getValue("CRAWLING_ID",0) == 0){
-        jQuery('#pubboard > div:contains("LInk")').find("a").each(function(index){
-            let id = jQuery(this).attr('href').split('=')[1]
-            var urlParams = new URLSearchParams(window.location.search);
-            if(id!=urlParams.get('id')) {
-                GM_setValue("CRAWLING_ID",id);
-                jQuery(this).click();
-            }
-        });
-    }
+    if(!jQuery("#crawlBoardCheck").prop("checked")) return;
+    jQuery('#pubboard > div:contains("LInk")').find("a").each(function(index){
+        let id = jQuery(this).attr('href').split('=')[1]
+        var urlParams = new URLSearchParams(window.location.search);
+        if(id!=urlParams.get('id')) jQuery(this).click();
+    });
 }
 
 var ibuying = false;
   
-setInterval(buy, 10); //buy every 10msec
-setInterval(quickCan, 1000); //check if need to can every 1sec
-setInterval(level, 1000); //check leveling every 1sec
-setInterval(reloadPage, GM_getValue("REFRESH_INTERVAL", 600000)); //refresh page every 10min
+setInterval(buy, 10);
+setInterval(quickCan,1000);
+setInterval(level,1000);
+//setInterval(reloadPage, GM_getValue("REFRESH_INTERVAL", 600000));
 
-setInterval(flipBoard, 10000); //check boardflip every 10sec
+setInterval(flipBoard, 10000);
 
 var zNode = document.createElement ('div');
 zNode.innerHTML = `
@@ -89,19 +86,19 @@ zNode.setAttribute('id', 'clickerContainer');
 zNode.setAttribute('style','border:3px double red');
 jQuery("#playercash").after(zNode);
 
-jQuery("#autoBuyCheck").prop("checked",GM_getValue("AUTO_BUY",false));
+jQuery("#autoBuyCheck").prop("checked",GM_getValue("AUTO_BUY"+myId,false));
 jQuery("#autoBuyCheck").on("click", function(){
-    GM_setValue("AUTO_BUY",jQuery("#autoBuyCheck").prop("checked"));
+    GM_setValue("AUTO_BUY"+myId,jQuery("#autoBuyCheck").prop("checked"));
 });
-jQuery("#autoLevelCheck").prop("checked",GM_getValue("AUTO_LEVEL",false));
+jQuery("#autoLevelCheck").prop("checked",GM_getValue("AUTO_LEVEL"+myId,false));
 jQuery("#autoLevelCheck").on("click", function(){
-    GM_setValue("AUTO_LEVEL",jQuery("#autoLevelCheck").prop("checked"));
-    GM_setValue("CRAWL", false);
+    GM_setValue("AUTO_LEVEL"+myId,jQuery("#autoLevelCheck").prop("checked"));
+    GM_setValue("CRAWL"+myId, false);
 });
-jQuery("#crawlBoardCheck").prop("checked",GM_getValue("CRAWL",false));
+jQuery("#crawlBoardCheck").prop("checked",GM_getValue("CRAWL"+myId,false));
 jQuery("#crawlBoardCheck").on("click", function(){
-    GM_setValue("CRAWL",jQuery("#crawlBoardCheck").prop("checked"));
-    GM_setValue("AUTO_LEVEL",false);
+    GM_setValue("CRAWL"+myId,jQuery("#crawlBoardCheck").prop("checked"));
+    GM_setValue("AUTO_LEVEL"+myId,false);
 });
 
 
