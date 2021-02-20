@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Petmogule clicker
+// @name         Petmogule clicker - test
 // @namespace    https://violentmonkey.github.io
-// @version      1.3
+// @version      1.3t
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -67,11 +67,9 @@ function flipBoard(){
 
 var ibuying = false;
   
-setInterval(buy, 10);
+setInterval(buy, 500);
 setInterval(quickCan,1000);
 setInterval(level,1000);
-//setInterval(reloadPage, GM_getValue("REFRESH_INTERVAL", 600000));
-
 setInterval(flipBoard, 10000);
 
 var zNode = document.createElement ('div');
