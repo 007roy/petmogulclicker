@@ -81,7 +81,8 @@ var zNode = document.createElement ('div');
 zNode.innerHTML = `
    <input id="autoBuyCheck" type="checkbox"><label for="autoBuyCheck">Auto Buy</label>
    <input id="autoLevelCheck" type="checkbox"><label for="autoLevelCheck">Auto Level</label>
-   <input id="crawlBoardCheck" type="checkbox"><label for="crawlBoard">Crawl Board</label>
+   <input id="crawlBoardCheck" type="checkbox"><label for="crawlBoard">Crawl Board</label><br />
+<center>PMClicker v${GM_info.script.version}</center>
 `;
 
 zNode.setAttribute('id', 'clickerContainer');
