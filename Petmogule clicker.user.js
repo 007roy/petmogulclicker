@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker
 // @namespace    https://violentmonkey.github.io
-// @version      0.7
+// @version      0.8
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -68,5 +68,6 @@ zNode.innerHTML = `
    <input id="autoBuyCheck" type="checkbox"><label for="autoBuyCheck">Auto Buy</label>
    <input id="autoLevelCheck" type="checkbox"><label for="autoLevelCheck">Auto Level</label>
 `;
-zNode.setAttribute('id', 'clickerContainer').css( "border", "3px double red" );
+zNode.setAttribute('id', 'clickerContainer');
+jQuery('#clickerContainer').css( "border", "3px double red" );
 jQuery("#playercash").after(zNode);
