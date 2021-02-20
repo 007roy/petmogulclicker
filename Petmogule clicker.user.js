@@ -35,6 +35,7 @@ function quickCan(){
 
 function level(){
     //let id = GM_getValue("LEVEL_ID", 0)
+    if(jQuery("#lvlbt1").length == 1) GM_setValue("CRAWLING_ID",0);
     if(!jQuery("#autoLevelCheck").prop("checked")) return;
     //var urlParams = new URLSearchParams(window.location.search);
     //if(id!=urlParams.get('id')) return;
@@ -54,22 +55,27 @@ function reloadPage(){
 }
 
 function flipBoard(){
-    if(!jQuery("#crawlBoardCheck").prop("checked")) return;
-    jQuery('#pubboard > div:contains("LInk")').find("a").each(function(index){
-        let id = jQuery(this).attr('href').split('=')[1]
-        var urlParams = new URLSearchParams(window.location.search);
-        if(id!=urlParams.get('id')) jQuery(this).click();
-    });
+    
+    if(jQuery("#crawlBoardCheck").prop("checked") && GM_getValue("CRAWLING_ID",0) == 0){
+        jQuery('#pubboard > div:contains("LInk")').find("a").each(function(index){
+            let id = jQuery(this).attr('href').split('=')[1]
+            var urlParams = new URLSearchParams(window.location.search);
+            if(id!=urlParams.get('id')) {
+                GM_setValue("CRAWLING_ID",id);
+                jQuery(this).click();
+            }
+        });
+    }
 }
 
 var ibuying = false;
   
-setInterval(buy, 10);
-setInterval(quickCan,1000);
-setInterval(level,1000);
-setInterval(reloadPage, GM_getValue("REFRESH_INTERVAL", 600000));
+setInterval(buy, 10); //buy every 10msec
+setInterval(quickCan, 1000); //check if need to can every 1sec
+setInterval(level, 1000); //check leveling every 1sec
+setInterval(reloadPage, GM_getValue("REFRESH_INTERVAL", 600000)); //refresh page every 10min
 
-setInterval(flipBoard, 10000);
+setInterval(flipBoard, 10000); //check boardflip every 10sec
 
 var zNode = document.createElement ('div');
 zNode.innerHTML = `
