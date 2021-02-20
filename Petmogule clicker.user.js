@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker
 // @namespace    https://violentmonkey.github.io
-// @version      0.6
+// @version      0.7
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -49,6 +49,12 @@ function reloadPage(){
     location.reload();
 }
 
+function flipBoard(){
+    jQuery('#pubboard > div:contains("LInk")').find("a").each(function(index){
+        console.log($(this).attr('href'));
+    });
+}
+
 var ibuying = false;
 var clickerOn = true;
   
@@ -62,5 +68,5 @@ zNode.innerHTML = `
    <input id="autoBuyCheck" type="checkbox"><label for="autoBuyCheck">Auto Buy</label>
    <input id="autoLevelCheck" type="checkbox"><label for="autoLevelCheck">Auto Level</label>
 `;
-zNode.setAttribute('id', 'clickerContainer');
+zNode.setAttribute('id', 'clickerContainer').css( "border", "3px double red" );
 jQuery("#playercash").after(zNode);
