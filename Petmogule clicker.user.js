@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker - test
 // @namespace    https://violentmonkey.github.io
-// @version      1.3t
+// @version      1.4t
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -9,9 +9,12 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // ==/UserScript==
-   
-var jQuery = window.jQuery;
-var myId = parseInt(String(jQuery('#pvt_notice').prop('onclick')).match(/[0-9]+/g)[1]);
+
+setInterval(buy, 500);
+setInterval(quickCan,1000);
+setInterval(level,1000);
+setInterval(flipBoard, 10000);
+
 function buy(){
     if(!jQuery("#autoBuyCheck").prop("checked")) return;
     if(!!document.getElementById("pubt")){
@@ -19,19 +22,36 @@ function buy(){
         GM_setValue("LAST_BUY"+myId, jQuery.now());
     }else{
         var lastBuy = GM_getValue("LAST_BUY"+myId,jQuery.now());
-        if(jQuery.now()-lastBuy > 60000) reloadPage();
+        if(jQuery.now()-lastBuy > 60000){
+            GM_setValue("LAST_BUY"+myId, jQuery.now());
+            reloadPage();
+        }
     }    
 }
 
-
 function getCash(){
-  var scash = document.getElementById("curentcash").getElementsByTagName("SPAN")[0].getAttribute("title").split(",")[0].substr(1);
-  return parseInt(scash);
+    var scash = jQuery('#curentcash :first-child').html().split(' ');
+    var exp;
+    if(scash[1] == Quint) {exp = "e18";}
+    else if (scash[1] == Quad) {
+        exp = "e15";        
+    }
+    return parseInt(scash[0]+exp);
 }
+
+function getPageId(){
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id');
+}
+
+function getMyId(){
+    return parseInt(String(jQuery('#pvt_notice').prop('onclick')).match(/[0-9]+/g)[1]);
+}
+
 function quickCan(){
     var icash = getCash();
-    if(icash < 9) document.getElementById("quickcan").click();
-    if(icash == 17){
+    if(icash < 9e18) document.getElementById("quickcan").click();
+    if(icash > 17e18){
         document.getElementById("pd").click();
         var drop = document.getElementById("dropvalue");
         drop.selectedIndex = "9";
@@ -58,30 +78,31 @@ function reloadPage(){
 
 function flipBoard(){
     if(!jQuery("#crawlBoardCheck").prop("checked")) return;
+    if(jQuery("#lvlbt1").length == 1) GM_setValue("FLIP_NEXT", true); //if lvlpt pops go to next
+    if(!GM_getValue("FLIP_NEXT", true)) return;
     jQuery('#pubboard > div:contains("LInk")').find("a").each(function(index){
-        let id = jQuery(this).attr('href').split('=')[1]
-        var urlParams = new URLSearchParams(window.location.search);
-        if(id!=urlParams.get('id')) jQuery(this).click();
+        var url = new URL(jQuery(this).prop('href'));
+        if(url.searchParams.get('id')!=pageId){
+            GM_setValue("FLIP_NEXT", false);
+            window.location.href=url.href;
+        }
     });
 }
 
+var jQuery = window.jQuery;
+const myId = getMyId();
+const pageId = getPageId();
 var ibuying = false;
-  
-setInterval(buy, 500);
-setInterval(quickCan,1000);
-setInterval(level,1000);
-setInterval(flipBoard, 10000);
 
-var zNode = document.createElement ('div');
-zNode.innerHTML = `
+//---------main control
+var zNode = jQuery('<div></div>');
+zNode.html(`
    <input id="autoBuyCheck" type="checkbox"><label for="autoBuyCheck">Auto Buy</label>
    <input id="autoLevelCheck" type="checkbox"><label for="autoLevelCheck">Auto Level</label>
    <input id="crawlBoardCheck" type="checkbox"><label for="crawlBoard">Crawl Board</label><br />
 <center>PMClicker v${GM_info.script.version}</center>
-`;
-
-zNode.setAttribute('id', 'clickerContainer');
-zNode.setAttribute('style','border:3px double red');
+`);
+zNode.attr({'id': 'clickerContainer','style':'border:3px double red'});
 jQuery("#playercash").after(zNode);
 
 jQuery("#autoBuyCheck").prop("checked",GM_getValue("AUTO_BUY"+myId,false));
