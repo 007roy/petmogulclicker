@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker - test
 // @namespace    https://violentmonkey.github.io
-// @version      1.4t
+// @version      1.6t
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -10,7 +10,7 @@
 // @grant        GM_setValue
 // ==/UserScript==
 
-setInterval(buy, 500);
+setInterval(buy, 100);
 setInterval(quickCan,1000);
 setInterval(level,1000);
 setInterval(flipBoard, 10000);
@@ -32,8 +32,8 @@ function buy(){
 function getCash(){
     var scash = jQuery('#curentcash :first-child').html().split(' ');
     var exp;
-    if(scash[1] == Quint) {exp = "e18";}
-    else if (scash[1] == Quad) {
+    if(scash[1] == "Quint") {exp = "e18";}
+    else if (scash[1] == "Quad") {
         exp = "e15";        
     }
     return parseInt(scash[0]+exp);
