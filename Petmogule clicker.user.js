@@ -164,7 +164,9 @@ function initUI(){
         GM_setValue("AUTO_LEVEL"+myId,false);
     });
   
-    
+    //couple UI tweeks
+    jQuery('#purchaselink').css('height','30px');
+    jQuery('marquee').css('display','none');
 }
 
 function whosOnline(){
