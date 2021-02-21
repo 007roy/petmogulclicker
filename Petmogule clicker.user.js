@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         Petmogule clicker - test
 // @namespace    https://violentmonkey.github.io
-// @version      1.6t
+// @version      1.7t
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
 // @require      http://code.jquery.com/jquery-latest.min.js
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_notification
 // ==/UserScript==
 
 var jQuery = window.jQuery;
@@ -21,6 +22,7 @@ setInterval(quickCan,1000);
 setInterval(level,1000);
 setInterval(flipBoard, 10000);
 setInterval(makeStats, 5000);
+setInterval(whosOnline, 10000);
 
 function buy(){
     if(!jQuery("#autoBuyCheck").prop("checked")) return;
@@ -131,17 +133,21 @@ function makeStats(){
 }
   
 function initUI(){
-    var zNode = jQuery('<div></div>');
-    zNode.html(`
+    jQuery('.features-items > li').first().after('<li id="clickerBox" class="feature-item profileblocks showblock "></li>')
+    var zNode = jQuery('<div class="right-content"></div>');
+  zNode.html(`<h4>PMClicker v${GM_info.script.version}</h4>
+<div><center>
        <input id="autoBuyCheck" type="checkbox"><label for="autoBuyCheck">Auto Buy</label>
        <input id="autoLevelCheck" type="checkbox"><label for="autoLevelCheck">Auto Level</label>
        <input id="crawlBoardCheck" type="checkbox"><label for="crawlBoard">Crawl Board</label>
+  </center></div>
     <div>You: <span id='cpm'></span> <span id='lph'></span></div>
     <div>Target: <span id='tcpm'></span> <span id='tlph'></span></div>
-    <div id='pmclicker'>PMClicker v${GM_info.script.version}</div>
+<div>Online (<span id='playerCount'></span>):</div>
+<list id='listBox'></list>
     `);
-    zNode.attr({'id': 'clickerContainer','style':'border:3px double red'});
-    jQuery("#playercash").after(zNode);
+    //zNode.attr({'id': 'clickerContainer','style':'border:3px double red'});
+    jQuery("#clickerBox").append(zNode);
 
     jQuery("#autoBuyCheck").prop("checked",GM_getValue("AUTO_BUY"+myId,false));
     jQuery("#autoBuyCheck").on("click", function(){
@@ -157,4 +163,21 @@ function initUI(){
         GM_setValue("CRAWL"+myId,jQuery("#crawlBoardCheck").prop("checked"));
         GM_setValue("AUTO_LEVEL"+myId,false);
     });
+  
+    
+}
+
+function whosOnline(){
+  var onlinePlayerList = jQuery('<list></list>');
+  var onlineSelect = jQuery('#onlinemembers > a');
+  jQuery('#playerCount').html(onlineSelect.length);
+  onlineSelect.each(function(index){
+    var link = jQuery(this).prop('href');
+    var name = jQuery(this).find('img').prop('title');
+    var lio = name.lastIndexOf('Member');
+    var shortName = name.slice(0,lio);
+    var newLink = jQuery(`<li><a href='${link}'>${shortName}</a></li>`);
+    onlinePlayerList.append(newLink);
+  });
+  jQuery('#listBox').html(onlinePlayerList.html()); 
 }
