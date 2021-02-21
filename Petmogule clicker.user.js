@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Petmogule clicker - test
+// @name         Petmogule clicker
 // @namespace    https://violentmonkey.github.io
-// @version      1.6t
+// @version      1.6
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -152,9 +152,10 @@ function initUI(){
         GM_setValue("AUTO_LEVEL"+myId,jQuery("#autoLevelCheck").prop("checked"));
         GM_setValue("CRAWL"+myId, false);
     });
+    /*
     jQuery("#crawlBoardCheck").prop("checked",GM_getValue("CRAWL"+myId,false));
     jQuery("#crawlBoardCheck").on("click", function(){
         GM_setValue("CRAWL"+myId,jQuery("#crawlBoardCheck").prop("checked"));
         GM_setValue("AUTO_LEVEL"+myId,false);
-    });
+    });*/
 }
