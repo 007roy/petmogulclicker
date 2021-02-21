@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker - test
 // @namespace    https://violentmonkey.github.io
-// @version      1.7t
+// @version      1.8t
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -17,18 +17,19 @@ const pageId = getPageId();
 var ibuying = false;
 initUI();
 
-setInterval(buy, 100);
+setInterval(buy, 200);
 setInterval(quickCan,1000);
 setInterval(level,1000);
 setInterval(flipBoard, 10000);
 setInterval(makeStats, 5000);
 setInterval(whosOnline, 10000);
+setInterval(valueProgress, 1000);
 
 function buy(){
     if(!jQuery("#autoBuyCheck").prop("checked")) return;
-    if(!!document.getElementById("pubt")){
-        document.getElementById("pubt").click();
+    if(jQuery('#pubt').click().length != 0){
         GM_setValue("LAST_BUY"+myId, jQuery.now());
+
     }else{
         var lastBuy = GM_getValue("LAST_BUY"+myId,jQuery.now());
         if(jQuery.now()-lastBuy > 60000){
@@ -37,7 +38,9 @@ function buy(){
         }
     }    
 }
-
+function getTargetValue(){
+  return parseFloat(jQuery('#playervalue').html().replace(/,/g,""));
+}
 function getCash(){
     var scash = jQuery('#curentcash :first-child').html().split(' ');
     var exp;
@@ -55,9 +58,9 @@ function getTargetCash(){
 function getLevel(){
   return parseInt(jQuery('#curentlevel').html());
 }
+
 function getTargetLevel(){
   return parseInt(jQuery('#playerlevel').html().split('<')[0]);
- 
 }
 
 
@@ -82,14 +85,22 @@ function quickCan(){
 }
 
 function level(){
-    if(!jQuery("#autoLevelCheck").prop("checked")) return;
+    
     if(jQuery("#lvlbt1").length == 1 && !ibuying)
     {
-        console.log('beep');
+        markStats();
+        if(!jQuery("#autoLevelCheck").prop("checked")) return;
         if(getCash() < 5) jQuery("#quickcan").click();
         jQuery("#lvlbt1").click();
         ibuying = true;
-        setTimeout(() => {jQuery("#lvlbt").click(); ibuying = false;},500);
+        setTimeout(() => {
+          if(jQuery("#lvlbt").click() != 0){ 
+            ibuying = false;
+            var now = jQuery.now();
+            GM_setValue('TIME_TO_LEVEL'+myId,now-GM_getValue('LEVEL_TIME'+myId,now));
+            GM_setValue('LEVEL_TIME'+myId,now);
+          }
+        },500);
     }
     if(jQuery('#lvlbt').prop('disabled')) reloadPage();
 }
@@ -115,6 +126,7 @@ function markStats(){
     GM_setValue("LEVEL"+myId, getLevel());
     GM_setValue("TARGET_LEVEL"+myId, getTargetLevel());
     GM_setValue("LAST_STAT_UPDATE"+myId, jQuery.now());
+    
 }
 
 function makeStats(){
@@ -126,9 +138,7 @@ function makeStats(){
     var lph = (getLevel() - lastLevel)/(delta/60);
     jQuery('#lph').html(lph.toFixed(1) + ' l/h ');
   
-    var tlastLevel = GM_getValue("TARGET_LEVEL"+myId, 0);
-    var tlph = (getTargetLevel() - tlastLevel)/(delta/60);
-    jQuery('#tlph').html(tlph.toFixed(1) + ' l/h ');
+
 
 }
   
@@ -146,7 +156,6 @@ function initUI(){
 <div>Online (<span id='playerCount'></span>):</div>
 <list id='listBox'></list>
     `);
-    //zNode.attr({'id': 'clickerContainer','style':'border:3px double red'});
     jQuery("#clickerBox").append(zNode);
 
     jQuery("#autoBuyCheck").prop("checked",GM_getValue("AUTO_BUY"+myId,false));
@@ -164,11 +173,17 @@ function initUI(){
         GM_setValue("AUTO_LEVEL"+myId,false);
     });
   
-    //couple UI tweeks
+    //fix default ui
     jQuery('#purchaselink').css('height','30px');
     jQuery('marquee').css('display','none');
+    jQuery('#playervalue').after('<progress id="valueProgress" value="0" max="800"></progress>');
+    jQuery('#playervalue').css('display','none');
 }
-
+function valueProgress(){
+  var prog = Math.log(getTargetValue()/50000)/0.04;
+  jQuery('#valueProgress').prop('value',prog);
+  jQuery('#tlph').html((GM_getValue('TIME_TO_LEVEL'+myId)/60000).toFixed(2) + ' min/lvl');
+}
 function whosOnline(){
   var onlinePlayerList = jQuery('<list></list>');
   var onlineSelect = jQuery('#onlinemembers > a');
