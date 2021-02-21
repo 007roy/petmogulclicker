@@ -9,7 +9,13 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // ==/UserScript==
+
 var jQuery = window.jQuery;
+const myId = getMyId();
+const pageId = getPageId();
+var ibuying = false;
+initUI();
+
 setInterval(buy, 100);
 setInterval(quickCan,1000);
 setInterval(level,1000);
@@ -104,28 +110,14 @@ function flipBoard(){
 }
 
 function markStats(){
-    GM_setValue("CASH"+myId, getCash());
     GM_setValue("LEVEL"+myId, getLevel());
-    GM_setValue("TARGET_CASH"+myId, getTargetCash());
     GM_setValue("TARGET_LEVEL"+myId, getTargetLevel());
     GM_setValue("LAST_STAT_UPDATE"+myId, jQuery.now());
-  
 }
 
 function makeStats(){
     var delta = (jQuery.now() - GM_getValue("LAST_STAT_UPDATE"+myId, 0))/60000;
     if(delta > 1440) markStats();
-  /*
-    // cash/m while on
-    var lastCash = GM_getValue("CASH"+myId, 0);
-    var cpm = (getCash() - lastCash)/delta;
-    jQuery('#cpm').html(cpm.toExponential(2) + ' c/m ');
-    
-    var tlastCash = GM_getValue("TARGET_CASH"+myId, 0);
-    var tc = getTargetCash();
-    var tcpm = (tc - tlastCash)/delta;
-    jQuery('#tcpm').html(tcpm.toExponential(2) + ' c/m ');
-  */
   
     // lvl/m while on
     var lastLevel = GM_getValue("LEVEL"+myId, 0);
@@ -138,38 +130,31 @@ function makeStats(){
 
 }
   
+function initUI(){
+    var zNode = jQuery('<div></div>');
+    zNode.html(`
+       <input id="autoBuyCheck" type="checkbox"><label for="autoBuyCheck">Auto Buy</label>
+       <input id="autoLevelCheck" type="checkbox"><label for="autoLevelCheck">Auto Level</label>
+       <input id="crawlBoardCheck" type="checkbox"><label for="crawlBoard">Crawl Board</label>
+    <div>You: <span id='cpm'></span> <span id='lph'></span></div>
+    <div>Target: <span id='tcpm'></span> <span id='tlph'></span></div>
+    <div id='pmclicker'>PMClicker v${GM_info.script.version}</div>
+    `);
+    zNode.attr({'id': 'clickerContainer','style':'border:3px double red'});
+    jQuery("#playercash").after(zNode);
 
-const myId = getMyId();
-const pageId = getPageId();
-var ibuying = false;
-
-//---------main control
-var zNode = jQuery('<div></div>');
-zNode.html(`
-   <input id="autoBuyCheck" type="checkbox"><label for="autoBuyCheck">Auto Buy</label>
-   <input id="autoLevelCheck" type="checkbox"><label for="autoLevelCheck">Auto Level</label>
-   <input id="crawlBoardCheck" type="checkbox"><label for="crawlBoard">Crawl Board</label>
-<div>You: <span id='cpm'></span> <span id='lph'></span></div>
-<div>Target: <span id='tcpm'></span> <span id='tlph'></span></div>
-<div id='pmclicker'>PMClicker v${GM_info.script.version}</div>
-`);
-zNode.attr({'id': 'clickerContainer','style':'border:3px double red'});
-jQuery("#playercash").after(zNode);
-
-jQuery("#autoBuyCheck").prop("checked",GM_getValue("AUTO_BUY"+myId,false));
-jQuery("#autoBuyCheck").on("click", function(){
-    GM_setValue("AUTO_BUY"+myId,jQuery("#autoBuyCheck").prop("checked"));
-});
-jQuery("#autoLevelCheck").prop("checked",GM_getValue("AUTO_LEVEL"+myId,false));
-jQuery("#autoLevelCheck").on("click", function(){
-    GM_setValue("AUTO_LEVEL"+myId,jQuery("#autoLevelCheck").prop("checked"));
-    GM_setValue("CRAWL"+myId, false);
-});
-jQuery("#crawlBoardCheck").prop("checked",GM_getValue("CRAWL"+myId,false));
-jQuery("#crawlBoardCheck").on("click", function(){
-    GM_setValue("CRAWL"+myId,jQuery("#crawlBoardCheck").prop("checked"));
-    GM_setValue("AUTO_LEVEL"+myId,false);
-});
-
-
-
+    jQuery("#autoBuyCheck").prop("checked",GM_getValue("AUTO_BUY"+myId,false));
+    jQuery("#autoBuyCheck").on("click", function(){
+        GM_setValue("AUTO_BUY"+myId,jQuery("#autoBuyCheck").prop("checked"));
+    });
+    jQuery("#autoLevelCheck").prop("checked",GM_getValue("AUTO_LEVEL"+myId,false));
+    jQuery("#autoLevelCheck").on("click", function(){
+        GM_setValue("AUTO_LEVEL"+myId,jQuery("#autoLevelCheck").prop("checked"));
+        GM_setValue("CRAWL"+myId, false);
+    });
+    jQuery("#crawlBoardCheck").prop("checked",GM_getValue("CRAWL"+myId,false));
+    jQuery("#crawlBoardCheck").on("click", function(){
+        GM_setValue("CRAWL"+myId,jQuery("#crawlBoardCheck").prop("checked"));
+        GM_setValue("AUTO_LEVEL"+myId,false);
+    });
+}
