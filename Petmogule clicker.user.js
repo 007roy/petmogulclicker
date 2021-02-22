@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Petmogule clicker
 // @namespace    https://violentmonkey.github.io
-// @version      1.8
+// @version      1.9
 // @description  try to take over the world!
 // @author       You
 // @match        https://petmogul-2-0.com/profile.php?id=*
@@ -17,7 +17,7 @@ const pageId = getPageId();
 var ibuying = false;
 initUI();
 
-setInterval(buy, 200);
+setInterval(buy, 190);
 setInterval(quickCan,1000);
 setInterval(level,1000);
 setInterval(flipBoard, 10000);
@@ -27,7 +27,7 @@ setInterval(valueProgress, 1000);
 
 function buy(){
     if(!jQuery("#autoBuyCheck").prop("checked")) return;
-    if(jQuery('#pubt').click().length != 0){
+    if(jQuery('#pubt').click().length == 1){
         GM_setValue("LAST_BUY"+myId, jQuery.now());
 
     }else{
@@ -90,19 +90,20 @@ function level(){
     {
         markStats();
         if(!jQuery("#autoLevelCheck").prop("checked")) return;
-        if(getCash() < 5) jQuery("#quickcan").click();
+        if(getCash() < 5e18) jQuery("#quickcan").click();
         jQuery("#lvlbt1").click();
         ibuying = true;
         setTimeout(() => {
-          if(jQuery("#lvlbt").click() != 0){ 
-            ibuying = false;
-            var now = jQuery.now();
-            GM_setValue('TIME_TO_LEVEL'+myId,now-GM_getValue('LEVEL_TIME'+myId,now));
-            GM_setValue('LEVEL_TIME'+myId,now);
-          }
+          if(jQuery("#lvlbt").click() == 1){
+            console.log('leveled');
+           // var now = jQuery.now();
+           // GM_setValue('TIME_TO_LEVEL'+myId,now-GM_getValue('LEVEL_TIME'+myId,now));
+            //GM_setValue('LEVEL_TIME'+myId,now);
+          }else console.log('not leveled');
+          ibuying = false;
         },500);
     }
-    if(jQuery('#lvlbt').prop('disabled')) reloadPage();
+    //if(jQuery('#lvlbt').prop('disabled')) reloadPage();
 }
 
 function reloadPage(){
